@@ -84,7 +84,7 @@ the following properties:
 - **linkable**: True unless the controller's breadCrumbPath was false.
 - **isCurrent**: True for the most specific (last) bread crumb, otherwise false.
 
-### gtxcel-breadCrumbs
+### GTxcel/ember-breadCrumbs
 With the latest version of Ember CLI, it is not easy/possible (??) to pass
 computed values to one of the parameters in the breadCrumbs objects.  This
 fix provides a work-around, giving the ability to create a named computed value
@@ -93,23 +93,23 @@ at runtime with the correct value.
 
 Example:
 
-breadCrumbs: [
-  {
-    label: {{crumbName}},
-    path: 'post.edit',
-    model: {{crumbId}}
-  }
-],
+    breadCrumbs: [
+       {
+          label: {{crumbName}},
+          path: 'post.edit',
+          model: {{crumbId}}
+       }
+    ],
 
-crumbName: function() {
- var model = this.get('model'(;
- return model.get('title');
-}.property('model'),
+    crumbName: function() {
+       var model = this.get('model'(;
+       return model.get('title');
+    }.property('model'),
 
-crumbName: function() {
- var model = this.get('model'(;
- return model.get('id');
-}.property('model'),
+    crumbName: function() {
+       var model = this.get('model'(;
+       return model.get('id');
+    }.property('model'),
 
 
 ## License

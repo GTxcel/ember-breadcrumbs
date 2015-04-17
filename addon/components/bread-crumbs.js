@@ -29,26 +29,12 @@ export default Ember.Component.extend({
   }).property("handlerInfos.[]"),
 
   breadCrumbs: function() {
-    // optional custom parameters; can be added to handlebars call
-    var topLabel = this.get("top-label");
-    var topPath = this.get("top-path");
-    var topLinkable = this.get("top-linkable");
-
     var controllers = this.get("controllers");
     var defaultPaths = this.get("pathNames");
     var breadCrumbs = [];
 
     // match our pseudo-computed value structure
     var computedRE = /{{(.*)}}/;
-
-    if (topPath && topLabel) {
-      breadCrumbs.addObject(Ember.Object.create({
-        label: topLabel,
-        path: topPath,
-        linkable: (typeof topLinkable != "undefined") ? topLinkable == "true" : false,
-        isCurrent: false
-      }));
-  }
 
     controllers.forEach(function(controller, index) {
       var crumbs = controller.get("breadCrumbs") || [];

@@ -29,9 +29,26 @@ export default Ember.Component.extend({
   }).property("handlerInfos.[]"),
 
   breadCrumbs: function() {
+    // optional custom parameters; can be added to handlebars call
+    var topLabel = this.get("top-label");
+    var topPath = this.get("top-path");
+    var topLinkable = this.get("top-linkable");
+
     var controllers = this.get("controllers");
     var defaultPaths = this.get("pathNames");
     var breadCrumbs = [];
+
+    // match our pseudo-computed value structure
+    var computedRE = /{{(.*)}}/;
+
+    if (topPath && topLabel) {
+      breadCrumbs.addObject(Ember.Object.create({
+        label: topLabel,
+        path: topPath,
+        linkable: (typeof topLinkable != "undefined") ? topLinkable == "true" : false,
+        isCurrent: false
+      }));
+  }
 
     controllers.forEach(function(controller, index) {
       var crumbs = controller.get("breadCrumbs") || [];
@@ -45,7 +62,28 @@ export default Ember.Component.extend({
         });
       }
 
-      crumbs.forEach(function (crumb) {
+      // REWRITE FOR COMPUTED VALUES
+      // Enable passing of a pseudo-computed value for multiple breadcrumbs.
+      // Structure of value is:  {{title}}
+      // "title" will be extracted from string, then used as a key to the
+      // controller to get the associated computed value.
+      // If there is no computed value with that name, it will not replace
+      // the original value, even if it matches the structure.
+      // NOTE: We make a clone so as not to overwrite original, which is
+      // *apparently* stored and returned for each individual controller.
+      var crumbsClone = Ember.$.extend(true, [], crumbs);
+      Ember.$.each(crumbsClone, function(index, crumb) {
+        Ember.$.each(crumb, function(key, value) {
+          if (typeof value == "string") {
+            var matchComputed = value.match(computedRE);
+            if (matchComputed != null && typeof matchComputed[1] == "string") {
+              var newVal = controller.get(matchComputed[1]);
+              if (typeof newVal != "undefined") {
+                crumb[key] = newVal;
+              }
+            }
+          }
+        });
         breadCrumbs.addObject(Ember.Object.create({
           label: crumb.label,
           path: crumb.path || defaultPaths[index],

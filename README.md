@@ -58,6 +58,8 @@ the following attributes:
 - **path**: The path that the crumb should link to. Optional; if not specified,
   the controller's route's path will be used instead.
 - **model**: An object that should be passed into `{{link-to}}`. Optional.
+  This can be any string/parameter that will be added to the end of the
+  generated path, including id values for edit or query parameters.
 
 ## Customization
 
@@ -71,14 +73,44 @@ your own markup. Simply add a template to your project at the path:
 app/templates/components/bread-crumbs.hbs
 ```
 
+### breadCrumbs
 Your template can reference `breadCrumbs`, which is an array of objects containing
 the following properties:
 
 - **label**: The title of the breadcrumb.
 - **path**: The path that the crumb should link to. Can pass to `link-to`.
-- **model**: The model object that can be passed to `link-to`. May not be present.
+- **model**: The model object that can be passed to `link-to`. Whatever follows the
+  generated path. May not be present.
 - **linkable**: True unless the controller's breadCrumbPath was false.
 - **isCurrent**: True for the most specific (last) bread crumb, otherwise false.
+
+### gtxcel-breadCrumbs
+With the latest version of Ember CLI, it is not easy/possible (??) to pass
+computed values to one of the parameters in the breadCrumbs objects.  This
+fix provides a work-around, giving the ability to create a named computed value
+in the controller, specify it in a breadCrumbs object and have it replaced
+at runtime with the correct value.
+
+Example:
+
+breadCrumbs: [
+  {
+    label: {{crumbName}},
+    path: 'post.edit',
+    model: {{crumbId}}
+  }
+],
+
+crumbName: function() {
+ var model = this.get('model'(;
+ return model.get('title');
+}.property('model'),
+
+crumbName: function() {
+ var model = this.get('model'(;
+ return model.get('id');
+}.property('model'),
+
 
 ## License
 

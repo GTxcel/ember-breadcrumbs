@@ -1,5 +1,10 @@
 # ember-breadcrumbs changelog
 
+### GTxcel version
+
+- Added ability to pass parameters for top-level path to be added to every breadcrumb
+- Provide capability to use computed property in "breadCrumbs" declaration
+
 ### 0.1.6
 
 - [Bugfix] Revert 0.1.5. The attempted fix caused other problems, see issue #27.
